@@ -12,7 +12,7 @@ import {
 
 export const TableStorageAdapter = (client: TableClient) => {
   return {
-    async createUser(user) {
+    async createUser(user: any) {
       user.id = randomBytes(16).toString("hex")
 
       await Promise.all([
@@ -40,7 +40,7 @@ export const TableStorageAdapter = (client: TableClient) => {
         return null
       }
     },
-    async getUserByEmail(email) {
+    async getUserByEmail(email: string) {
       try {
         const user = await client.getEntity(keys.user, email)
         return withoutKeys(user)
@@ -48,7 +48,7 @@ export const TableStorageAdapter = (client: TableClient) => {
         return null
       }
     },
-    async getUserByAccount({ providerAccountId, provider }) {
+    async getUserByAccount({ providerAccountId, provider } : any) {
       try {
         const rowKey = `${providerAccountId}_${provider}`
 
@@ -64,7 +64,7 @@ export const TableStorageAdapter = (client: TableClient) => {
         return null
       }
     },
-    async updateUser(user) {
+    async updateUser(user: any) {
       let email = user.email
       if (!email) {
         const userById = await client.getEntity<UserById>(
@@ -79,7 +79,7 @@ export const TableStorageAdapter = (client: TableClient) => {
 
       return user
     },
-    async deleteUser(userId) {
+    async deleteUser(userId: string) {
       try {
         const { email } = await client.getEntity<UserById>(
           keys.userById,
@@ -112,7 +112,7 @@ export const TableStorageAdapter = (client: TableClient) => {
         return null
       }
     },
-    async linkAccount(account) {
+    async linkAccount(account: any) {
       try {
         await client.createEntity({
           ...account,
@@ -130,7 +130,7 @@ export const TableStorageAdapter = (client: TableClient) => {
         return null
       }
     },
-    async unlinkAccount({ providerAccountId, provider }) {
+    async unlinkAccount({ providerAccountId, provider } : any) {
       try {
         const rowKey = `${providerAccountId}_${provider}`
         const account = await client.getEntity<Account>(keys.account, rowKey)
@@ -143,7 +143,7 @@ export const TableStorageAdapter = (client: TableClient) => {
         return null
       }
     },
-    async createSession(session) {
+    async createSession(session: any) {
       await client.createEntity({
         ...session,
         partitionKey: keys.session,
@@ -157,7 +157,7 @@ export const TableStorageAdapter = (client: TableClient) => {
 
       return withoutKeys(session)
     },
-    async getSessionAndUser(sessionToken) {
+    async getSessionAndUser(sessionToken: any) {
       try {
         const session = await client.getEntity<Session>(
           keys.session,
@@ -182,7 +182,7 @@ export const TableStorageAdapter = (client: TableClient) => {
         return null
       }
     },
-    async updateSession(session) {
+    async updateSession(session: any) {
       try {
         await client.updateEntity({
           ...session,
@@ -195,7 +195,7 @@ export const TableStorageAdapter = (client: TableClient) => {
         return null
       }
     },
-    async deleteSession(sessionToken) {
+    async deleteSession(sessionToken: any) {
       try {
         const session = await client.getEntity<Session>(
           keys.session,
@@ -212,7 +212,7 @@ export const TableStorageAdapter = (client: TableClient) => {
         return null
       }
     },
-    async createVerificationToken(token) {
+    async createVerificationToken(token: any) {
       await client.createEntity({
         ...token,
         partitionKey: keys.verificationToken,
@@ -221,7 +221,7 @@ export const TableStorageAdapter = (client: TableClient) => {
 
       return token
     },
-    async useVerificationToken({ identifier, token }) {
+    async useVerificationToken({ identifier, token } : any) {
       try {
         const tokenEntity = await client.getEntity<VerificationToken>(
           keys.verificationToken,
